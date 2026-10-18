@@ -6,5 +6,5 @@ object SupabaseConfig {
         "https://uzrqikxxknhnqragxyhj.supabase.co"
 
     const val PUBLISHABLE_KEY =
-        "PASTE_YOUR_PUBLISHABLE_KEY_HERE"
+        "sb_publishable_dTV63vvJx02PT6h8_9Q1pQ_hQI2QF7W"
 }

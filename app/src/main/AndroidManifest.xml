@@ -7,8 +7,8 @@
     <application
         android:allowBackup="false"
         android:label="Fennec Player"
-        android:usesCleartextTraffic="false"
-        android:theme="@android:style/Theme.Material.NoActionBar"
+        android:usesCleartextTraffic="true"
+        android:theme="@style/FennecTheme"
         android:supportsRtl="true">
 
         <activity

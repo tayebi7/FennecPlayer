@@ -1,56 +1,46 @@
 
 package com.fennecplayer.iptv
 
-import android.graphics.Color
+import android.app.Activity
 import android.os.Bundle
+import android.graphics.Color
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
 import androidx.media3.common.MediaItem
-import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 
-class PlayerActivity : AppCompatActivity() {
+class PlayerActivity : Activity() {
+
+    companion object {
+        var playlistUrl: String = ""
+        var playlistContent: String = ""
+        var channelNames: List<String> = emptyList()
+    }
 
     private var player: ExoPlayer? = null
+    private lateinit var playerView: PlayerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val name = intent.getStringExtra("name") ?: "Fennec Player"
-        val url = intent.getStringExtra("url").orEmpty()
-
-        window.statusBarColor = Color.rgb(7, 17, 38)
-        window.navigationBarColor = Color.BLACK
-
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setBackgroundColor(Color.BLACK)
+            setBackgroundColor(Color.rgb(16, 24, 39))
         }
 
-        val title = TextView(this).apply {
-            text = name
-            textSize = 18f
-            setTextColor(Color.WHITE)
-            setPadding(16, 16, 16, 16)
+        val header = TextView(this).apply {
+            text = "🦊 FENNEC PLAYER"
+            textSize = 22f
+            setTextColor(Color.rgb(255, 140, 50))
+            setPadding(16, 18, 16, 18)
         }
+        root.addView(header)
 
-        root.addView(
-            title,
-            LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-        )
-
-        val playerView = PlayerView(this).apply {
-            useController = true
-            setShowBuffering(PlayerView.SHOW_BUFFERING_ALWAYS)
-        }
-
+        playerView = PlayerView(this)
         root.addView(
             playerView,
             LinearLayout.LayoutParams(
@@ -62,33 +52,63 @@ class PlayerActivity : AppCompatActivity() {
 
         setContentView(root)
 
-        if (url.isBlank()) {
-            title.text = "$name\nNo stream URL was provided."
+        val firstStream = findFirstStream(playlistContent)
+
+        if (firstStream == null) {
+            Toast.makeText(
+                this,
+                "No playable stream found in playlist",
+                Toast.LENGTH_LONG
+            ).show()
+            finish()
             return
         }
 
-        try {
-            player = ExoPlayer.Builder(this).build().also { exo ->
-                playerView.player = exo
-
-                exo.addListener(object : Player.Listener {
-                    override fun onPlayerError(error: PlaybackException) {
-                        title.text = "$name\nPlayback failed: ${error.errorCodeName}"
-                    }
-                })
-
-                exo.setMediaItem(MediaItem.fromUri(url))
-                exo.prepare()
-                exo.playWhenReady = true
-            }
-        } catch (e: Exception) {
-            title.text = "$name\nUnable to start playback."
+        player = ExoPlayer.Builder(this).build().also { exoPlayer ->
+            playerView.player = exoPlayer
+            exoPlayer.setMediaItem(MediaItem.fromUri(firstStream))
+            exoPlayer.addListener(object : Player.Listener {
+                override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
+                    Toast.makeText(
+                        this@PlayerActivity,
+                        "Playback error: ${error.errorCodeName}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            })
+            exoPlayer.prepare()
+            exoPlayer.playWhenReady = true
         }
     }
 
+    private fun findFirstStream(content: String): String? {
+        val lines = content.lines()
+        for (i in lines.indices) {
+            if (lines[i].trim().startsWith("#EXTINF:")) {
+                for (j in i + 1 until lines.size) {
+                    val line = lines[j].trim()
+                    if (line.isNotEmpty() && !line.startsWith("#")) {
+                        if (line.startsWith("http://") ||
+                            line.startsWith("https://")) {
+                            return line
+                        }
+                        break
+                    }
+                }
+            }
+        }
+        return null
+    }
+
     override fun onStop() {
+        super.onStop()
+        player?.pause()
+    }
+
+    override fun onDestroy() {
+        playerView.player = null
         player?.release()
         player = null
-        super.onStop()
+        super.onDestroy()
     }
 }

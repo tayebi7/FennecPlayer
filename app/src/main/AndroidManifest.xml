@@ -2,16 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tayebi7.fennecplayer">
 
-    <!-- صلاحيات الإنترنت والشبكة -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
-    <!-- لدعم أجهزة التلفزيون والهواتف معاً بدون إجبار وجود شاشة لمس -->
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
     <uses-feature android:name="android.software.leanback" android:required="false" />
 
-    <!-- تفعيل الاتصال عبر بروتوكول http غير المشفر لسيرفرات الـ IPTV -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,12 +18,10 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
 
-        <!-- الشاشة الرئيسية (Dashboard) -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:screenOrientation="sensorLandscape"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode">
+            android:screenOrientation="sensorLandscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -34,20 +29,15 @@
             </intent-filter>
         </activity>
 
-        <!-- شاشة تفعيل الحساب وتوليد الـ MAC و الـ QR Code -->
         <activity
             android:name=".ActivationActivity"
             android:exported="false"
-            android:screenOrientation="sensorLandscape"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode" />
+            android:screenOrientation="sensorLandscape" />
 
-        <!-- شاشة عرض القنوات والبث المباشر (Live TV) -->
         <activity
             android:name=".LiveTvActivity"
             android:exported="false"
-            android:screenOrientation="sensorLandscape"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode" />
+            android:screenOrientation="sensorLandscape" />
 
     </application>
-
 </manifest>

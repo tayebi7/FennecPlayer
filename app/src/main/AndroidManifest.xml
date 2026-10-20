@@ -40,4 +40,5 @@
             android:screenOrientation="sensorLandscape" />
 
     </application>
+
 </manifest>

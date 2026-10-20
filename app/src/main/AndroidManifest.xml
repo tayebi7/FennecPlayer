@@ -1,164 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#0F101E"
-    android:orientation="horizontal"
-    android:padding="24dp"
-    android:weightSum="2">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tayebi7.fennecplayer">
 
-    <!-- القسم الأيسر: معلومات الجهاز (MAC Address + Device Key + QR Code) -->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginEnd="16dp"
-        android:layout_weight="1"
-        android:background="#1A1C33"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="20dp">
+    <!-- صلاحيات الإنترنت والشبكة -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="FENNEC PLAYER PRO"
-            android:textColor="#FF9800"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+    <!-- لدعم أجهزة التلفزيون والهواتف معاً بدون إجبار وجود شاشة لمس -->
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+    <uses-feature android:name="android.software.leanback" android:required="false" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:text="امسح رمز الـ QR أو استخدم بيانات الجهاز لإضافة قائمة القنوات"
-            android:textColor="#B0B3C6"
-            android:textSize="14sp" />
+    <!-- تفعيل الاتصال عبر بروتوكول http غير المشفر لسيرفرات الـ IPTV -->
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:banner="@mipmap/ic_launcher"
+        android:label="Fennec Player"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
+        android:theme="@style/Theme.AppCompat.NoActionBar">
 
-        <!-- صورة الـ QR Code -->
-        <ImageView
-            android:id="@+id/ivQrCode"
-            android:layout_width="170dp"
-            android:layout_height="170dp"
-            android:layout_marginTop="16dp"
-            android:background="#FFFFFF"
-            android:padding="6dp"
-            android:contentDescription="QR Code" />
+        <!-- الشاشة الرئيسية (Dashboard) -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:screenOrientation="sensorLandscape"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+        </activity>
 
-        <!-- صندوق عرض الـ MAC Address -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="#121324"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="12dp">
+        <!-- شاشة تفعيل الحساب وتوليد الـ MAC و الـ QR Code -->
+        <activity
+            android:name=".ActivationActivity"
+            android:exported="false"
+            android:screenOrientation="sensorLandscape"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="MAC Address:"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp" />
+        <!-- شاشة عرض القنوات والبث المباشر (Live TV) -->
+        <activity
+            android:name=".LiveTvActivity"
+            android:exported="false"
+            android:screenOrientation="sensorLandscape"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode" />
 
-            <TextView
-                android:id="@+id/tvMacAddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="00:1A:79:00:00:00"
-                android:textColor="#FF9800"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+    </application>
 
-        <!-- صندوق عرض الـ Device Key -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="#121324"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="12dp">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Device Key:"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/tvDeviceKey"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="123456"
-                android:textColor="#4CAF50"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/btnReloadMac"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:backgroundTint="#2C2F4C"
-            android:focusable="true"
-            android:text="تحديث حالة التفعيل (Reload)"
-            android:textColor="#FFFFFF" />
-
-    </LinearLayout>
-
-    <!-- القسم الأيمن: إدخال كود Xtream مباشر أو MAC مخصص -->
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="#1A1C33"
-        android:fillViewport="true">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:padding="20dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="إضافة قائمة تشغيل (Xtream Codes)"
-                android:textColor="#FFFFFF"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/etPlaylistName"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="16dp"
-                android:background="#121324"
-                android:hint="اسم القائمة (مثال: Fennec TV)"
-                android:inputType="text"
-                android:paddingHorizontal="12dp"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#6C708A" />
-
-            <EditText
-                android:id="@+id/etServerUrl"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="10dp"
-                android:background="#121324"
-                android:hint="رابط السيرفر (http://server.com:8080)"
-                android:inputType="textUri"
-                android:paddingHorizontal="12dp"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#6C708A" />
-
-            <EditText
-                android:id="@+
+</manifest>

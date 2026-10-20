@@ -9,46 +9,34 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.qrcode.QRCodeWriter
 import java.security.MessageDigest
-import kotlin.math.abs
 
 object IboDeviceUtils {
 
+    private const val PREFS = "fennec_prefs"
+
     @SuppressLint("HardwareIds")
-    fun getAndroidId(context: Context): String {
-        return Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+    fun getAndroidId(context: Context): String =
+        Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
             ?: "0000000000000000"
-    }
 
     fun generateVirtualMac(context: Context): String {
-        val prefs = context.getSharedPreferences("fennec_prefs", Context.MODE_PRIVATE)
-        val savedMac = prefs.getString("device_mac", null)
-        if (!savedMac.isNullOrEmpty()) return savedMac
+        val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        prefs.getString("device_mac", null)?.takeIf { it.isNotEmpty() }?.let { return it }
 
-        val androidId = getAndroidId(context)
-        val bytes = MessageDigest.getInstance("MD5").digest(androidId.toByteArray())
-
-        val macBuilder = StringBuilder("00:1A:")
-        for (i in 0 until 4) {
-            macBuilder.append(String.format("%02X", bytes[i]))
-            if (i < 3) macBuilder.append(":")
-        }
-
-        val generatedMac = macBuilder.toString()
-        prefs.edit().putString("device_mac", generatedMac).apply()
-        return generatedMac
+        val bytes = MessageDigest.getInstance("MD5").digest(getAndroidId(context).toByteArray())
+        val mac = "00:1A:" + (0 until 4).joinToString(":") { "%02X".format(bytes[it].toInt() and 0xFF) }
+        prefs.edit().putString("device_mac", mac).apply()
+        return mac
     }
 
     fun getMacAddress(context: Context): String = generateVirtualMac(context)
 
     fun generateDeviceKey(context: Context): String {
-        val prefs = context.getSharedPreferences("fennec_prefs", Context.MODE_PRIVATE)
-        val savedKey = prefs.getString("device_key", null)
-        if (!savedKey.isNullOrEmpty()) return savedKey
+        val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        prefs.getString("device_key", null)?.takeIf { it.isNotEmpty() }?.let { return it }
 
-        val androidId = getAndroidId(context)
-        val hash = abs(androidId.hashCode())
-        val key = String.format("%06d", hash % 1000000)
-
+        // floorMod بدل abs لأن abs(Int.MIN_VALUE) يبقى سالباً
+        val key = "%06d".format(Math.floorMod(getAndroidId(context).hashCode(), 1_000_000))
         prefs.edit().putString("device_key", key).apply()
         return key
     }
@@ -57,21 +45,19 @@ object IboDeviceUtils {
 
     fun generateQrCodeBitmap(content: String, size: Int = 400): Bitmap? {
         return try {
-            val hints = hashMapOf<EncodeHintType, Any>()
-            hints[EncodeHintType.MARGIN] = 1
-            hints[EncodeHintType.CHARACTER_SET] = "UTF-8"
-
-            val bitMatrix = QRCodeWriter().encode(content, BarcodeFormat.QR_CODE, size, size, hints)
-            val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.RGB_565)
-
-            for (x in 0 until size) {
-                for (y in 0 until size) {
-                    bitmap.setPixel(x, y, if (bitMatrix[x, y]) Color.BLACK else Color.WHITE)
+            val hints = hashMapOf<EncodeHintType, Any>(
+                EncodeHintType.MARGIN to 1,
+                EncodeHintType.CHARACTER_SET to "UTF-8"
+            )
+            val matrix = QRCodeWriter().encode(content, BarcodeFormat.QR_CODE, size, size, hints)
+            val pixels = IntArray(size * size)
+            for (y in 0 until size) {
+                for (x in 0 until size) {
+                    pixels[y * size + x] = if (matrix[x, y]) Color.BLACK else Color.WHITE
                 }
             }
-            bitmap
+            Bitmap.createBitmap(pixels, size, size, Bitmap.Config.ARGB_8888)
         } catch (e: Exception) {
-            e.printStackTrace()
             null
         }
     }

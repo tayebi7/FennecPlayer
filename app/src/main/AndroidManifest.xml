@@ -1,31 +1,37 @@
-
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tayebi7.fennecplayer">
 
+    <!-- صلاحيات الإنترنت والشبكة -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
+    <!-- لدعم أجهزة التلفزيون والهواتف معاً بدون إجبار وجود شاشة لمس -->
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+    <uses-feature android:name="android.software.leanback" android:required="false" />
+
+    <!-- انتبه لخاصية usesCleartextTraffic لتشغيل روابط البث http -->
     <application
-        android:allowBackup="false"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:banner="@mipmap/ic_launcher"
         android:label="Fennec Player"
+        android:supportsRtl="true"
         android:usesCleartextTraffic="true"
-        android:theme="@style/FennecTheme"
-        android:supportsRtl="true">
-
-        <activity
-            android:name=".PlayerActivity"
-            android:exported="false"
-            android:configChanges="orientation|screenSize|keyboardHidden" />
+        android:theme="@style/Theme.AppCompat.NoActionBar">
 
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-
+            android:exported="true"
+            android:screenOrientation="sensorLandscape"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
-
         </activity>
-
+        
     </application>
 </manifest>

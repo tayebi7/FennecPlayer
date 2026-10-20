@@ -48,6 +48,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.google.code.gson:gson:2.10.1")
 
     // مشغل الفيديو (Media3) - وحدة HLS ضرورية لروابط m3u8
     implementation("androidx.media3:media3-exoplayer:1.2.0")

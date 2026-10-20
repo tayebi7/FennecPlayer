@@ -19,7 +19,6 @@ object IboDeviceUtils {
             ?: "0000000000000000"
     }
 
-    // توليد MAC Address ثابت وفريد للجهاز بنفس صيغة IBO Player (مثال: 00:1A:79:4C:5D:6E)
     fun generateVirtualMac(context: Context): String {
         val prefs = context.getSharedPreferences("fennec_prefs", Context.MODE_PRIVATE)
         val savedMac = prefs.getString("device_mac", null)
@@ -39,10 +38,8 @@ object IboDeviceUtils {
         return generatedMac
     }
 
-    // دالة مساعدة بنفس الاسم في حال استدعائها من الصفحات الأخرى
     fun getMacAddress(context: Context): String = generateVirtualMac(context)
 
-    // توليد Device Key من 6 أرقام لتفعيل التطبيق وربطه بالسيرفر
     fun generateDeviceKey(context: Context): String {
         val prefs = context.getSharedPreferences("fennec_prefs", Context.MODE_PRIVATE)
         val savedKey = prefs.getString("device_key", null)
@@ -56,10 +53,8 @@ object IboDeviceUtils {
         return key
     }
 
-    // دالة مساعدة بنفس الاسم في حال استدعائها من الصفحات الأخرى
     fun getDeviceKey(context: Context): String = generateDeviceKey(context)
 
-    // توليد صورة QR Code تحتوي على بيانات الـ MAC والـ Device Key
     fun generateQrCodeBitmap(content: String, size: Int = 400): Bitmap? {
         return try {
             val hints = hashMapOf<EncodeHintType, Any>()

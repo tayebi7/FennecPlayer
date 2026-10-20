@@ -1,4 +1,5 @@
-
 # Fennec Player ProGuard rules
-# Keep Media3 player classes when needed.
 -keep class androidx.media3.** { *; }
+# نماذج Gson
+-keep class com.tayebi7.fennecplayer.network.** { *; }
+-keepattributes Signature, *Annotation*

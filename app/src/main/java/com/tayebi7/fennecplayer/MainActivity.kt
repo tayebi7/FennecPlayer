@@ -1,22 +1,24 @@
 package com.tayebi7.fennecplayer
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.tayebi7.fennecplayer.network.XtreamApiService
+import com.tayebi7.fennecplayer.data.ContentType
+import com.tayebi7.fennecplayer.data.PlaylistStore
+import com.tayebi7.fennecplayer.data.PlaylistType
+import com.tayebi7.fennecplayer.data.Repo
 import com.tayebi7.fennecplayer.utils.IboDeviceUtils
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,6 +26,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvExpiration: TextView
     private lateinit var tvFooterMac: TextView
     private lateinit var tvLiveCount: TextView
+    private lateinit var tvMovieCount: TextView
+    private lateinit var tvSeriesCount: TextView
+    private lateinit var progress: ProgressBar
 
     private lateinit var cardLiveTv: LinearLayout
     private lateinit var cardMovies: LinearLayout
@@ -33,10 +38,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnReloadData: Button
     private lateinit var btnExitApp: Button
 
+    private var loadJob: Job? = null
+    private var launchedActivation = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         initViews()
         setupListeners()
         cardLiveTv.requestFocus()
@@ -44,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        checkAndLoadPlaylist()
+        loadPlaylist(force = false)
     }
 
     private fun initViews() {
@@ -52,6 +59,9 @@ class MainActivity : AppCompatActivity() {
         tvExpiration = findViewById(R.id.tvExpiration)
         tvFooterMac = findViewById(R.id.tvFooterMac)
         tvLiveCount = findViewById(R.id.tvLiveCount)
+        tvMovieCount = findViewById(R.id.tvMovieCount)
+        tvSeriesCount = findViewById(R.id.tvSeriesCount)
+        progress = findViewById(R.id.progress)
 
         cardLiveTv = findViewById(R.id.cardLiveTv)
         cardMovies = findViewById(R.id.cardMovies)
@@ -62,92 +72,65 @@ class MainActivity : AppCompatActivity() {
         btnExitApp = findViewById(R.id.btnExitApp)
     }
 
-    private fun checkAndLoadPlaylist() {
-        val prefs = getSharedPreferences("fennec_prefs", Context.MODE_PRIVATE)
-        val serverUrl = prefs.getString("server_url", "") ?: ""
-        val username = prefs.getString("username", "") ?: ""
-        val password = prefs.getString("password", "") ?: ""
-        val playlistName = prefs.getString("playlist_name", "Fennec TV") ?: "Fennec TV"
+    private fun loadPlaylist(force: Boolean) {
+        tvFooterMac.text = "MAC: ${IboDeviceUtils.getMacAddress(this)}"
 
-        val mac = IboDeviceUtils.getMacAddress(this)
-        tvFooterMac.text = "MAC: $mac"
-        tvActivePlaylist.text = "Playlist: $playlistName"
-
-        if (serverUrl.isEmpty() || username.isEmpty() || password.isEmpty()) {
-            startActivity(Intent(this, ActivationActivity::class.java))
+        val playlist = PlaylistStore.load(this)
+        if (playlist == null) {
+            // نفتح شاشة التفعيل مرة واحدة فقط لتفادي حلقة لا نهائية عند الضغط على رجوع
+            if (!launchedActivation) {
+                launchedActivation = true
+                startActivity(Intent(this, ActivationActivity::class.java))
+            }
             return
         }
+        launchedActivation = false
+        tvActivePlaylist.text = "القائمة: ${playlist.name}"
 
-        syncWithXtreamServer(serverUrl, username, password)
-    }
+        if (force) Repo.invalidate()
 
-    private fun syncWithXtreamServer(serverUrl: String, username: String, password: String) {
-        tvExpiration.text = "جاري الاتصال بالسيرفر..."
-        lifecycleScope.launch(Dispatchers.IO) {
-            try {
-                val api = XtreamApiService.create(serverUrl)
-                val loginResponse = api.login(username, password)
+        loadJob?.cancel()
+        loadJob = lifecycleScope.launch {
+            progress.visibility = View.VISIBLE
+            tvExpiration.text = "جاري الاتصال..."
+            tvLiveCount.text = "…"; tvMovieCount.text = "…"; tvSeriesCount.text = "…"
 
-                if (loginResponse.isSuccessful && loginResponse.body()?.userInfo != null) {
-                    val userInfo = loginResponse.body()!!.userInfo!!
-                    val expFormatted = formatExpiryDate(userInfo.expDate)
+            coroutineScope {
+                val live = async { runCatching { Repo.catalog(this@MainActivity, ContentType.LIVE) } }
+                val movies = async { runCatching { Repo.catalog(this@MainActivity, ContentType.MOVIE) } }
+                val series = async { runCatching { Repo.catalog(this@MainActivity, ContentType.SERIES) } }
+                val account = async { runCatching { Repo.accountInfo(this@MainActivity) } }
 
-                    val streamsResponse = api.getLiveStreams(username, password)
-                    val liveCount = streamsResponse.body()?.size ?: 0
+                val l = live.await(); val m = movies.await(); val s = series.await()
+                tvLiveCount.text = l.fold({ "${it.entries.size} قناة" }, { "تعذر التحميل" })
+                tvMovieCount.text = m.fold({ "${it.entries.size} فيلم" }, { "تعذر التحميل" })
+                tvSeriesCount.text = s.fold({ "${it.entries.size} مسلسل" }, { "تعذر التحميل" })
 
-                    withContext(Dispatchers.Main) {
-                        tvExpiration.text = "الصلاحية: $expFormatted (${userInfo.status})"
-                        tvLiveCount.text = "$liveCount قناة مباشرة"
-                    }
-                } else {
-                    withContext(Dispatchers.Main) {
-                        tvExpiration.text = "بيانات الاشتراك غير صحيحة"
-                    }
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    tvExpiration.text = "تعذر الاتصال بالسيرفر"
+                val failedAll = l.isFailure && m.isFailure && s.isFailure
+                val acc = account.await().getOrNull()
+                tvExpiration.text = when {
+                    failedAll -> "تعذر الاتصال بالسيرفر"
+                    acc != null -> "الصلاحية: ${acc.expiry}  (${acc.status})"
+                    playlist.type == PlaylistType.M3U -> "قائمة M3U"
+                    else -> ""
                 }
             }
-        }
-    }
-
-    private fun formatExpiryDate(timestampStr: String?): String {
-        if (timestampStr.isNullOrEmpty()) return "غير محدود"
-        return try {
-            val seconds = timestampStr.toLong()
-            val date = Date(seconds * 1000L)
-            SimpleDateFormat("yyyy-MM-dd", Locale.US).format(date)
-        } catch (e: Exception) {
-            "غير محدود"
+            progress.visibility = View.INVISIBLE
         }
     }
 
     private fun setupListeners() {
-        cardLiveTv.setOnClickListener {
-            // الانتقال إلى شاشة البث المباشر
-            startActivity(Intent(this, LiveTvActivity::class.java))
-        }
-
-        cardMovies.setOnClickListener {
-            Toast.makeText(this, "مكتبة الأفلام قيد التفعيل...", Toast.LENGTH_SHORT).show()
-        }
-
-        cardSeries.setOnClickListener {
-            Toast.makeText(this, "مكتبة المسلسلات قيد التفعيل...", Toast.LENGTH_SHORT).show()
-        }
+        cardLiveTv.setOnClickListener { startActivity(Intent(this, LiveTvActivity::class.java)) }
+        cardMovies.setOnClickListener { BrowseActivity.start(this, ContentType.MOVIE) }
+        cardSeries.setOnClickListener { BrowseActivity.start(this, ContentType.SERIES) }
 
         btnChangePlaylist.setOnClickListener {
             startActivity(Intent(this, ActivationActivity::class.java))
         }
-
         btnReloadData.setOnClickListener {
-            checkAndLoadPlaylist()
             Toast.makeText(this, "جاري تحديث البيانات...", Toast.LENGTH_SHORT).show()
+            loadPlaylist(force = true)
         }
-
-        btnExitApp.setOnClickListener {
-            finishAffinity()
-        }
+        btnExitApp.setOnClickListener { finishAffinity() }
     }
 }

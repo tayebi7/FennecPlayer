@@ -1,11 +1,14 @@
-
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="FennecTheme" parent="@android:style/Theme.Material.NoActionBar">
-        <item name="android:fontFamily">sans</item>
-        <item name="android:colorAccent">#FF8C32</item>
-        <item name="android:statusBarColor">#101827</item>
-        <item name="android:navigationBarColor">#101827</item>
+    <style name="FennecTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/bg_dark</item>
+        <item name="colorPrimaryDark">@color/bg_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:statusBarColor">@color/bg_dark</item>
+        <item name="android:navigationBarColor">@color/bg_dark</item>
+        <item name="android:windowBackground">@drawable/bg_main</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowBackground">#101827</item>
     </style>
 </resources>

@@ -27,7 +27,15 @@ jobs:
           gradle-version: '8.9'
 
       - name: Build debug APK
-        run: gradle --no-daemon assembleDebug --stacktrace
+        run: |
+          set +e
+          gradle --no-daemon assembleDebug --stacktrace > build.log 2>&1
+          code=$?
+          if [ $code -ne 0 ]; then
+            grep -E "^(e: |w: .*Unresolved|.*error:|.*AAPT)" build.log | head -30 | while IFS= read -r l; do echo "::error::${l:0:900}"; done
+            grep -E -A12 "What went wrong|Execution failed" build.log | head -20 | while IFS= read -r l; do echo "::error::${l:0:900}"; done
+          fi
+          exit $code
 
       - name: Upload APK
         if: success()

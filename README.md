@@ -1,34 +1,21 @@
-
 # Fennec Player
 
-An Android IPTV player built with Kotlin and AndroidX Media3.
+مشغل IPTV لأندرويد (هاتف / TV Box) بتصميم مشابه لـ IBO Player Pro، مبني بـ Kotlin و Media3 ExoPlayer.
 
-## Features
+## المميزات
+- تسجيل الدخول بـ **Xtream Codes** (سيرفر + اسم مستخدم + كلمة مرور) مع التحقق قبل الحفظ
+- دعم روابط **M3U / M3U8** (يُقسَّم المحتوى تلقائياً إلى بث مباشر / أفلام / مسلسلات)
+- رابط M3U من نوع `get.php?username=..&password=..` يُحوَّل تلقائياً إلى Xtream
+- البث المباشر: أقسام + قنوات + بحث + مشغل مدمج + ملء الشاشة + تبديل القنوات بأزرار الريموت
+- الأفلام والمسلسلات: شبكة بوسترات، بحث، حلقات المسلسلات مع الانتقال التلقائي للحلقة التالية
+- MAC وDevice Key وQR لكل جهاز، دعم ريموت التلفاز (focus)
 
-- M3U playlist support
-- Video playback using Media3 ExoPlayer
-- Simple Android interface
-- Android internet connectivity
-- Automated APK builds with GitHub Actions
-
-## Package
-
-`com.fennecplayer.iptv`
-
-## Build
-
-The project uses Gradle and Android SDK.
-
-To build a debug APK after the project is complete:
-
+## البناء
 ```bash
 gradle assembleDebug
 ```
+الملف الناتج: `app/build/outputs/apk/debug/app-debug.apk`
+(أو شغّل GitHub Actions: Build Fennec Player APK)
 
-The APK is generated at:
-
-`app/build/outputs/apk/debug/app-debug.apk`
-
-## Disclaimer
-
-Users are responsible for using playlists and streams they are authorized to access.
+## إخلاء مسؤولية
+يتحمل المستخدم مسؤولية استخدام قوائم وبثوث يملك حق الوصول إليها.

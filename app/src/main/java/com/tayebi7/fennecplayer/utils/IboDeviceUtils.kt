@@ -36,7 +36,7 @@ object IboDeviceUtils {
         prefs.getString("device_key", null)?.takeIf { it.isNotEmpty() }?.let { return it }
 
         // floorMod بدل abs لأن abs(Int.MIN_VALUE) يبقى سالباً
-        val key = "%06d".format(Math.floorMod(getAndroidId(context).hashCode(), 1_000_000))
+        val key = "%06d".format(((getAndroidId(context).hashCode() % 1_000_000) + 1_000_000) % 1_000_000)
         prefs.edit().putString("device_key", key).apply()
         return key
     }

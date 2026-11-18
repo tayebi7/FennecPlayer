@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.tayebi7.fennecplayer.ui.applySystemBarsPadding
 import com.tayebi7.fennecplayer.data.Playlist
 import com.tayebi7.fennecplayer.data.PlaylistStore
 import com.tayebi7.fennecplayer.data.PlaylistType
@@ -44,6 +45,7 @@ class ActivationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_activation)
+        findViewById<View>(android.R.id.content).applySystemBarsPadding()
 
         initViews()
         loadDeviceIdentity()
@@ -108,8 +110,8 @@ class ActivationActivity : AppCompatActivity() {
         layoutM3u.visibility = if (type == PlaylistType.M3U) View.VISIBLE else View.GONE
         btnTabXtream.isActivated = type == PlaylistType.XTREAM
         btnTabM3u.isActivated = type == PlaylistType.M3U
-        btnTabXtream.setTextColor(if (btnTabXtream.isActivated) 0xFF101827.toInt() else 0xFFFFFFFF.toInt())
-        btnTabM3u.setTextColor(if (btnTabM3u.isActivated) 0xFF101827.toInt() else 0xFFFFFFFF.toInt())
+        btnTabXtream.setTextColor(if (btnTabXtream.isActivated) 0xFFFFFFFF.toInt() else 0xFFFFFFFF.toInt())
+        btnTabM3u.setTextColor(if (btnTabM3u.isActivated) 0xFFFFFFFF.toInt() else 0xFFFFFFFF.toInt())
         tvStatus.visibility = View.GONE
     }
 

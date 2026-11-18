@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.tayebi7.fennecplayer.ui.applySystemBarsPadding
 import com.tayebi7.fennecplayer.data.ContentType
 import com.tayebi7.fennecplayer.data.PlaylistStore
 import com.tayebi7.fennecplayer.data.PlaylistType
@@ -44,6 +45,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        findViewById<View>(android.R.id.content).applySystemBarsPadding()
         initViews()
         setupListeners()
         cardLiveTv.requestFocus()

@@ -15,7 +15,6 @@ import com.tayebi7.fennecplayer.data.ContentType
 import com.tayebi7.fennecplayer.data.PlaylistStore
 import com.tayebi7.fennecplayer.data.PlaylistType
 import com.tayebi7.fennecplayer.data.Repo
-import com.tayebi7.fennecplayer.utils.IboDeviceUtils
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -25,7 +24,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var tvActivePlaylist: TextView
     private lateinit var tvExpiration: TextView
-    private lateinit var tvFooterMac: TextView
     private lateinit var tvLiveCount: TextView
     private lateinit var tvMovieCount: TextView
     private lateinit var tvSeriesCount: TextView
@@ -59,7 +57,6 @@ class MainActivity : AppCompatActivity() {
     private fun initViews() {
         tvActivePlaylist = findViewById(R.id.tvActivePlaylist)
         tvExpiration = findViewById(R.id.tvExpiration)
-        tvFooterMac = findViewById(R.id.tvFooterMac)
         tvLiveCount = findViewById(R.id.tvLiveCount)
         tvMovieCount = findViewById(R.id.tvMovieCount)
         tvSeriesCount = findViewById(R.id.tvSeriesCount)
@@ -75,8 +72,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadPlaylist(force: Boolean) {
-        tvFooterMac.text = "MAC: ${IboDeviceUtils.getMacAddress(this)}"
-
         val playlist = PlaylistStore.load(this)
         if (playlist == null) {
             // نفتح شاشة التفعيل مرة واحدة فقط لتفادي حلقة لا نهائية عند الضغط على رجوع
@@ -101,7 +96,6 @@ class MainActivity : AppCompatActivity() {
                 val live = async { runCatching { Repo.catalog(this@MainActivity, ContentType.LIVE) } }
                 val movies = async { runCatching { Repo.catalog(this@MainActivity, ContentType.MOVIE) } }
                 val series = async { runCatching { Repo.catalog(this@MainActivity, ContentType.SERIES) } }
-                val account = async { runCatching { Repo.accountInfo(this@MainActivity) } }
 
                 val l = live.await(); val m = movies.await(); val s = series.await()
                 tvLiveCount.text = l.fold({ "${it.entries.size} قناة" }, { "تعذر التحميل" })
@@ -109,12 +103,10 @@ class MainActivity : AppCompatActivity() {
                 tvSeriesCount.text = s.fold({ "${it.entries.size} مسلسل" }, { "تعذر التحميل" })
 
                 val failedAll = l.isFailure && m.isFailure && s.isFailure
-                val acc = account.await().getOrNull()
                 tvExpiration.text = when {
                     failedAll -> "تعذر الاتصال بالسيرفر"
-                    acc != null -> "الصلاحية: ${acc.expiry}  (${acc.status})"
                     playlist.type == PlaylistType.M3U -> "قائمة M3U"
-                    else -> ""
+                    else -> "Xtream"
                 }
             }
             progress.visibility = View.INVISIBLE

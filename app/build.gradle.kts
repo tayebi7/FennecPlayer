@@ -57,7 +57,4 @@ dependencies {
 
     // تحميل صور الشعارات والبوسترات
     implementation("com.github.bumptech.glide:glide:4.16.0")
-
-    // QR Code
-    implementation("com.google.zxing:core:3.5.2")
 }

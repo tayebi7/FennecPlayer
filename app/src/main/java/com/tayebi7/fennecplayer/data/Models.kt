@@ -31,12 +31,6 @@ data class Catalog(val categories: List<Category>, val entries: List<Entry>) {
     }
 }
 
-data class AccountInfo(
-    val status: String,
-    val expiry: String,
-    val maxConnections: String
-)
-
 data class Playlist(
     val name: String,
     val type: PlaylistType,

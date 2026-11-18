@@ -10,96 +10,25 @@
         android:layout_height="wrap_content"
         android:layoutDirection="ltr"
         android:orientation="horizontal"
-        android:padding="28dp"
-        android:weightSum="10">
-
-        <!-- معلومات الجهاز -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="4"
-            android:background="@drawable/bg_panel"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:padding="22dp">
-
-            <ImageView
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:contentDescription="@null"
-                android:src="@drawable/fennec_logo" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Fennec Player"
-                android:textColor="@color/text_primary"
-                android:textSize="22sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:text="MAC Address"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/tvMacAddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/accent"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="Device Key"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/tvDeviceKey"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/accent"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/ivQrCode"
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:layout_marginTop="16dp"
-                android:background="#FFFFFF"
-                android:contentDescription="@null"
-                android:padding="6dp" />
-
-            <Button
-                android:id="@+id/btnReloadMac"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="46dp"
-                android:layout_marginTop="14dp"
-                android:background="@drawable/bg_button"
-                android:text="تحديث بيانات الجهاز"
-                android:textColor="@color/text_primary" />
-        </LinearLayout>
+        android:gravity="center_horizontal"
+        android:padding="28dp">
 
         <!-- نموذج الإضافة -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="6"
+            android:maxWidth="560dp"
             android:background="@drawable/bg_panel"
             android:layoutDirection="locale"
             android:orientation="vertical"
             android:padding="22dp">
+
+            <ImageView
+                android:layout_width="84dp"
+                android:layout_height="84dp"
+                android:layout_gravity="center_horizontal"
+                android:contentDescription="@null"
+                android:src="@drawable/fennec_logo" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -237,21 +166,6 @@
                     android:textSize="12sp" />
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/etCustomMac"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/bg_input"
-                android:hint="MAC (اختياري)"
-                android:inputType="textCapCharacters"
-                android:maxLines="1"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
-                android:textColor="@color/text_primary"
-                android:textColorHint="@color/text_secondary"
-                android:textSize="15sp" />
-
             <TextView
                 android:id="@+id/tvStatus"
                 android:layout_width="match_parent"
@@ -269,7 +183,7 @@
                 android:layout_marginTop="14dp"
                 android:background="@drawable/bg_button_primary"
                 android:text="تسجيل الدخول"
-                android:textColor="#FFFFFF"
+                android:textColor="#06203A"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </LinearLayout>

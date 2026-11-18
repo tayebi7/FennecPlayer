@@ -30,8 +30,10 @@ class ActivationActivity : AppCompatActivity() {
     private lateinit var btnLoginConnect: Button
     private lateinit var btnTabXtream: Button
     private lateinit var btnTabM3u: Button
-    private lateinit var layoutXtream: View
+    private lateinit var colServer: View
+    private lateinit var layoutCreds: View
     private lateinit var layoutM3u: View
+    private lateinit var tvM3uHint: View
 
     private var mode = PlaylistType.XTREAM
 
@@ -62,7 +64,12 @@ class ActivationActivity : AppCompatActivity() {
         btnLoginConnect = findViewById(R.id.btnLoginConnect)
         btnTabXtream = findViewById(R.id.btnTabXtream)
         btnTabM3u = findViewById(R.id.btnTabM3u)
-        layoutXtream = findViewById(R.id.layoutXtream)
+        colServer = findViewById(R.id.colServer)
+        layoutCreds = findViewById(R.id.layoutCreds)
+        tvM3uHint = findViewById(R.id.tvM3uHint)
+        findViewById<View>(R.id.btnBack).setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
         layoutM3u = findViewById(R.id.layoutM3u)
     }
 
@@ -82,12 +89,15 @@ class ActivationActivity : AppCompatActivity() {
 
     private fun setMode(type: PlaylistType) {
         mode = type
-        layoutXtream.visibility = if (type == PlaylistType.XTREAM) View.VISIBLE else View.GONE
+        val x = if (type == PlaylistType.XTREAM) View.VISIBLE else View.GONE
+        colServer.visibility = x
+        layoutCreds.visibility = x
+        tvM3uHint.visibility = if (type == PlaylistType.M3U) View.VISIBLE else View.GONE
         layoutM3u.visibility = if (type == PlaylistType.M3U) View.VISIBLE else View.GONE
         btnTabXtream.isActivated = type == PlaylistType.XTREAM
         btnTabM3u.isActivated = type == PlaylistType.M3U
-        val on = 0xFF06203A.toInt()
-        val off = 0xFFFFFFFF.toInt()
+        val on = 0xFF1EB6FF.toInt()
+        val off = 0xFFB7D4EE.toInt()
         btnTabXtream.setTextColor(if (btnTabXtream.isActivated) on else off)
         btnTabM3u.setTextColor(if (btnTabM3u.isActivated) on else off)
         tvStatus.visibility = View.GONE

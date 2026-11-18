@@ -8,107 +8,208 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layoutDirection="ltr"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal"
-        android:padding="28dp">
+        android:orientation="vertical"
+        android:padding="24dp">
 
-        <!-- نموذج الإضافة -->
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxWidth="560dp"
-            android:background="@drawable/bg_panel"
-            android:layoutDirection="locale"
-            android:orientation="vertical"
-            android:padding="22dp">
+            android:layout_height="56dp"
+            android:layoutDirection="ltr">
 
-            <ImageView
-                android:layout_width="84dp"
-                android:layout_height="84dp"
-                android:layout_gravity="center_horizontal"
-                android:contentDescription="@null"
-                android:src="@drawable/fennec_logo" />
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="start|center_vertical"
+                android:background="@drawable/bg_item"
+                android:contentDescription="رجوع"
+                android:src="@drawable/ic_back" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="إضافة قائمة تشغيل"
                 android:textColor="@color/text_primary"
-                android:textSize="22sp"
-                android:textStyle="bold" />
+                android:textSize="24sp" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:gravity="center"
+            android:layoutDirection="ltr"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnTabM3u"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_tab"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:text="رابط M3U"
+                android:textAllCaps="false"
+                android:textSize="17sp" />
+
+            <Button
+                android:id="@+id/btnTabXtream"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginStart="24dp"
+                android:background="@drawable/bg_tab"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                android:text="Xtream Codes"
+                android:textAllCaps="false"
+                android:textSize="17sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="22dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/bg_panel_glass"
+            android:orientation="vertical"
+            android:padding="20dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:layoutDirection="ltr"
                 android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/btnTabXtream"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="46dp"
-                    android:layout_marginEnd="6dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_tab"
-                    android:text="Xtream Codes"
-                    android:textColor="@color/text_primary" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_marginEnd="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:visibility="visible">
 
-                <Button
-                    android:id="@+id/btnTabM3u"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="اسم القائمة"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/etPlaylistName"
+                    android:layout_width="match_parent"
                     android:layout_height="46dp"
-                    android:layout_marginStart="6dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_tab"
-                    android:text="رابط M3U"
-                    android:textColor="@color/text_primary" />
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_input"
+                    android:hint="الاسم"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="#99FFFFFF"
+                    android:textSize="15sp" />
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/etPlaylistName"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/bg_input"
-                android:hint="اسم القائمة"
-                android:inputType="text"
-                android:maxLines="1"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
-                android:textColor="@color/text_primary"
-                android:textColorHint="@color/text_secondary"
-                android:textSize="15sp" />
-
             <LinearLayout
-                android:id="@+id/layoutXtream"
-                android:layout_width="match_parent"
+                android:id="@+id/colServer"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginStart="14dp"
+                android:layout_marginEnd="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="رابط السيرفر"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
 
                 <EditText
                     android:id="@+id/etServerUrl"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="8dp"
                     android:background="@drawable/bg_input"
-                    android:hint="رابط السيرفر  http://example.com:8080"
+                    android:hint="http://server_domain:8080"
                     android:inputType="textUri"
                     android:maxLines="1"
                     android:paddingStart="14dp"
                     android:paddingEnd="14dp"
                     android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_secondary"
+                    android:textColorHint="#99FFFFFF"
                     android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutM3u"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_marginEnd="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="رابط M3U"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/etM3uUrl"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_input"
+                    android:hint="http://server_domain:8080/playlist.m3u"
+                    android:inputType="textUri"
+                    android:maxLines="1"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="#99FFFFFF"
+                    android:textSize="15sp" />
+            </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutCreds"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_marginEnd="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="اسم المستخدم"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
 
                 <EditText
                     android:id="@+id/etUsername"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="8dp"
                     android:background="@drawable/bg_input"
                     android:hint="اسم المستخدم"
                     android:inputType="text"
@@ -116,14 +217,31 @@
                     android:paddingStart="14dp"
                     android:paddingEnd="14dp"
                     android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_secondary"
+                    android:textColorHint="#99FFFFFF"
                     android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_marginEnd="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="كلمة المرور"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
 
                 <EditText
                     android:id="@+id/etPassword"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="8dp"
                     android:background="@drawable/bg_input"
                     android:hint="كلمة المرور"
                     android:inputType="textPassword"
@@ -131,61 +249,44 @@
                     android:paddingStart="14dp"
                     android:paddingEnd="14dp"
                     android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_secondary"
+                    android:textColorHint="#99FFFFFF"
                     android:textSize="15sp" />
             </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/layoutM3u"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <EditText
-                    android:id="@+id/etM3uUrl"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/bg_input"
-                    android:hint="رابط M3U  http://.../playlist.m3u"
-                    android:inputType="textUri"
-                    android:maxLines="1"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_secondary"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="إذا كان الرابط من نوع get.php?username=..&amp;password=.. فسيتم تحويله تلقائياً إلى حساب Xtream لدعم الأفلام والمسلسلات."
-                    android:textColor="@color/text_secondary"
-                    android:textSize="12sp" />
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tvStatus"
+                android:id="@+id/tvM3uHint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/danger"
-                android:textSize="13sp"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="12dp"
+                android:text="رابط من نوع get.php?username=..&amp;password=.. يُحوَّل تلقائياً إلى Xtream لدعم الأفلام والمسلسلات."
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
                 android:visibility="gone" />
-
-            <Button
-                android:id="@+id/btnLoginConnect"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginTop="14dp"
-                android:background="@drawable/bg_button_primary"
-                android:text="تسجيل الدخول"
-                android:textColor="#06203A"
-                android:textSize="16sp"
-                android:textStyle="bold" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:gravity="center"
+            android:textColor="@color/danger"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnLoginConnect"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="280dp"
+            android:layout_height="54dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="22dp"
+            android:background="@drawable/bg_button_primary"
+            android:text="إضافة القائمة"
+            android:textColor="#06203A"
+            android:textSize="16sp"
+            android:textStyle="bold" />
     </LinearLayout>
 </ScrollView>

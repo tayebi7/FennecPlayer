@@ -47,6 +47,12 @@ class MainActivity : AppCompatActivity() {
         initViews()
         setupListeners()
         cardLiveTv.requestFocus()
+        // تكبير خفيف للبطاقة المحددة بالريموت (كأسلوب IBO)
+        listOf(cardLiveTv, cardMovies, cardSeries).forEach { c ->
+            c.setOnFocusChangeListener { v, focused ->
+                v.animate().scaleX(if (focused) 1.06f else 1f).scaleY(if (focused) 1.06f else 1f).setDuration(120).start()
+            }
+        }
     }
 
     override fun onResume() {

@@ -12,9 +12,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.Request
 import retrofit2.Response
 import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 /** مصدر البيانات الموحد: يقرأ Xtream أو M3U ويحتفظ بالنتيجة في الذاكرة. */
 object Repo {
@@ -74,17 +71,6 @@ object Repo {
         } catch (e: Exception) {
             "تعذر الاتصال: ${e.message ?: e.javaClass.simpleName}"
         }
-    }
-
-    suspend fun accountInfo(context: Context): AccountInfo? = withContext(Dispatchers.IO) {
-        val p = PlaylistStore.load(context)?.takeIf { it.type == PlaylistType.XTREAM } ?: return@withContext null
-        val info = XtreamApiService.create(p.server).login(p.username, p.password).body()?.userInfo
-            ?: return@withContext null
-        AccountInfo(
-            status = info.status ?: "",
-            expiry = formatExpiry(info.expDate),
-            maxConnections = info.maxConnections ?: ""
-        )
     }
 
     suspend fun episodes(context: Context, seriesId: String): List<Episode> = withContext(Dispatchers.IO) {
@@ -193,12 +179,4 @@ object Repo {
     private fun JsonObject.str(key: String): String? =
         get(key)?.takeIf { !it.isJsonNull && it.isJsonPrimitive }?.asString
 
-    private fun formatExpiry(ts: String?): String {
-        if (ts.isNullOrEmpty() || ts == "null") return "غير محدود"
-        return try {
-            SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date(ts.toLong() * 1000L))
-        } catch (e: Exception) {
-            "غير محدود"
-        }
-    }
 }

@@ -1,40 +1,33 @@
 package com.tayebi7.fennecplayer
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.tayebi7.fennecplayer.ui.applySystemBarsPadding
 import com.tayebi7.fennecplayer.data.Playlist
 import com.tayebi7.fennecplayer.data.PlaylistStore
 import com.tayebi7.fennecplayer.data.PlaylistType
 import com.tayebi7.fennecplayer.data.Repo
 import com.tayebi7.fennecplayer.data.UrlUtils
-import com.tayebi7.fennecplayer.utils.IboDeviceUtils
+import com.tayebi7.fennecplayer.ui.applySystemBarsPadding
 import kotlinx.coroutines.launch
 
+/** شاشة إضافة قائمة تشغيل (Xtream أو رابط M3U). */
 class ActivationActivity : AppCompatActivity() {
 
-    private lateinit var tvMacAddress: TextView
-    private lateinit var tvDeviceKey: TextView
     private lateinit var tvStatus: TextView
-    private lateinit var ivQrCode: ImageView
     private lateinit var etPlaylistName: EditText
     private lateinit var etServerUrl: EditText
     private lateinit var etUsername: EditText
     private lateinit var etPassword: EditText
     private lateinit var etM3uUrl: EditText
-    private lateinit var etCustomMac: EditText
     private lateinit var btnLoginConnect: Button
-    private lateinit var btnReloadMac: Button
     private lateinit var btnTabXtream: Button
     private lateinit var btnTabM3u: Button
     private lateinit var layoutXtream: View
@@ -48,7 +41,6 @@ class ActivationActivity : AppCompatActivity() {
         findViewById<View>(android.R.id.content).applySystemBarsPadding()
 
         initViews()
-        loadDeviceIdentity()
         loadSavedCredentials()
         setupListeners()
 
@@ -61,33 +53,17 @@ class ActivationActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        tvMacAddress = findViewById(R.id.tvMacAddress)
-        tvDeviceKey = findViewById(R.id.tvDeviceKey)
         tvStatus = findViewById(R.id.tvStatus)
-        ivQrCode = findViewById(R.id.ivQrCode)
         etPlaylistName = findViewById(R.id.etPlaylistName)
         etServerUrl = findViewById(R.id.etServerUrl)
         etUsername = findViewById(R.id.etUsername)
         etPassword = findViewById(R.id.etPassword)
         etM3uUrl = findViewById(R.id.etM3uUrl)
-        etCustomMac = findViewById(R.id.etCustomMac)
         btnLoginConnect = findViewById(R.id.btnLoginConnect)
-        btnReloadMac = findViewById(R.id.btnReloadMac)
         btnTabXtream = findViewById(R.id.btnTabXtream)
         btnTabM3u = findViewById(R.id.btnTabM3u)
         layoutXtream = findViewById(R.id.layoutXtream)
         layoutM3u = findViewById(R.id.layoutM3u)
-    }
-
-    private fun loadDeviceIdentity() {
-        val mac = IboDeviceUtils.getMacAddress(this)
-        val key = IboDeviceUtils.getDeviceKey(this)
-        tvMacAddress.text = mac
-        tvDeviceKey.text = key
-        etCustomMac.setText(mac)
-
-        IboDeviceUtils.generateQrCodeBitmap("Fennec Player\nMAC: $mac\nKey: $key", 400)
-            ?.let { ivQrCode.setImageBitmap(it) }
     }
 
     private fun loadSavedCredentials() {
@@ -110,20 +86,16 @@ class ActivationActivity : AppCompatActivity() {
         layoutM3u.visibility = if (type == PlaylistType.M3U) View.VISIBLE else View.GONE
         btnTabXtream.isActivated = type == PlaylistType.XTREAM
         btnTabM3u.isActivated = type == PlaylistType.M3U
-        btnTabXtream.setTextColor(if (btnTabXtream.isActivated) 0xFFFFFFFF.toInt() else 0xFFFFFFFF.toInt())
-        btnTabM3u.setTextColor(if (btnTabM3u.isActivated) 0xFFFFFFFF.toInt() else 0xFFFFFFFF.toInt())
+        val on = 0xFF06203A.toInt()
+        val off = 0xFFFFFFFF.toInt()
+        btnTabXtream.setTextColor(if (btnTabXtream.isActivated) on else off)
+        btnTabM3u.setTextColor(if (btnTabM3u.isActivated) on else off)
         tvStatus.visibility = View.GONE
     }
 
     private fun setupListeners() {
         btnTabXtream.setOnClickListener { setMode(PlaylistType.XTREAM) }
         btnTabM3u.setOnClickListener { setMode(PlaylistType.M3U) }
-
-        btnReloadMac.setOnClickListener {
-            loadDeviceIdentity()
-            Toast.makeText(this, "تم تحديث بيانات الجهاز", Toast.LENGTH_SHORT).show()
-        }
-
         btnLoginConnect.setOnClickListener { connect() }
     }
 
@@ -134,7 +106,6 @@ class ActivationActivity : AppCompatActivity() {
 
     private fun connect() {
         val name = etPlaylistName.text.toString().trim().ifEmpty { "Fennec TV" }
-        val customMac = etCustomMac.text.toString().trim()
 
         val playlist: Playlist = if (mode == PlaylistType.XTREAM) {
             val server = UrlUtils.normalizeServer(etServerUrl.text.toString())
@@ -170,10 +141,6 @@ class ActivationActivity : AppCompatActivity() {
             }
 
             PlaylistStore.save(this@ActivationActivity, playlist)
-            if (customMac.isNotEmpty()) {
-                getSharedPreferences(PlaylistStore.PREFS, Context.MODE_PRIVATE)
-                    .edit().putString("device_mac", customMac).apply()
-            }
             Toast.makeText(this@ActivationActivity, "تم حفظ القائمة بنجاح", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this@ActivationActivity, MainActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)

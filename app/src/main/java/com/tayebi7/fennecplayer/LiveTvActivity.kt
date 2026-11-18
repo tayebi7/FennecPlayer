@@ -17,6 +17,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tayebi7.fennecplayer.ui.applySystemBarsPadding
 import com.tayebi7.fennecplayer.data.Catalog
 import com.tayebi7.fennecplayer.data.Category
 import com.tayebi7.fennecplayer.data.ContentType
@@ -59,6 +60,7 @@ class LiveTvActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_live_tv)
+        findViewById<View>(android.R.id.content).applySystemBarsPadding()
         initViews()
         onBackPressedDispatcher.addCallback(this, backCallback)
         loadData()

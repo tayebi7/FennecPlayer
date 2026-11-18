@@ -15,6 +15,7 @@
         android:label="Fennec Player"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
+        android:enableOnBackInvokedCallback="true"
         android:theme="@style/FennecTheme">
 
         <activity

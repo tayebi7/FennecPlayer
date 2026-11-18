@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tayebi7.fennecplayer.ui.applySystemBarsPadding
 import com.tayebi7.fennecplayer.data.Catalog
 import com.tayebi7.fennecplayer.data.Category
 import com.tayebi7.fennecplayer.data.ContentType
@@ -48,6 +49,7 @@ class BrowseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_browse)
+        findViewById<View>(android.R.id.content).applySystemBarsPadding()
 
         type = runCatching { ContentType.valueOf(intent.getStringExtra(EXTRA_TYPE) ?: "") }
             .getOrDefault(ContentType.MOVIE)

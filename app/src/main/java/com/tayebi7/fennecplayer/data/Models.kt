@@ -2,7 +2,7 @@ package com.tayebi7.fennecplayer.data
 
 enum class ContentType { LIVE, MOVIE, SERIES }
 
-enum class PlaylistType { XTREAM, M3U }
+enum class PlaylistType { XTREAM, M3U, FILE }
 
 data class Category(val id: String, val name: String, val count: Int = 0)
 
@@ -32,20 +32,23 @@ data class Catalog(val categories: List<Category>, val entries: List<Entry>) {
 }
 
 data class Playlist(
+    val id: String = java.util.UUID.randomUUID().toString(),
     val name: String,
     val type: PlaylistType,
     val server: String = "",
     val username: String = "",
     val password: String = "",
-    val m3uUrl: String = ""
+    /** رابط M3U، أو مسار الملف المحلي عندما يكون النوع FILE. */
+    val m3uUrl: String = "",
+    val id: String = java.util.UUID.randomUUID().toString()
 ) {
     val isValid: Boolean
         get() = when (type) {
             PlaylistType.XTREAM -> server.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty()
-            PlaylistType.M3U -> m3uUrl.isNotEmpty()
+            PlaylistType.M3U, PlaylistType.FILE -> m3uUrl.isNotEmpty()
         }
 
     /** يتغير عند تغير مصدر البيانات فقط، ويستخدم لإبطال الكاش. */
     val signature: String
-        get() = "$type|$server|$username|$password|$m3uUrl"
+        get() = "$id|$type|$server|$username|$password|$m3uUrl"
 }

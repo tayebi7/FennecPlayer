@@ -78,7 +78,7 @@ object FennecPlayerManager {
                 index++
                 load()
             } else {
-                onError("تعذر تشغيل القناة (${error.errorCodeName})")
+                onError(error.errorCodeName)
             }
         }
     }

@@ -40,7 +40,7 @@ object M3uParser {
                     }
                     line.startsWith("#") -> Unit
                     pending && line.contains("://") -> {
-                        val groupName = group.ifEmpty { "غير مصنف" }
+                        val groupName = group.ifEmpty { "Other" }
                         val type = classify(line, groupName)
                         index++
                         entries.getValue(type).add(

@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
-                android:text="البث المباشر"
+                android:text="@string/home_live"
                 android:textColor="@color/text_primary"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -42,7 +42,7 @@
                 android:layout_width="240dp"
                 android:layout_height="42dp"
                 android:background="@drawable/bg_input"
-                android:hint="بحث عن قناة"
+                android:hint="@string/search_channel"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:maxLines="1"
@@ -158,7 +158,7 @@
                         android:layout_weight="1"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:text="اختر قناة للتشغيل"
+                        android:text="@string/choose_channel"
                         android:textColor="@color/text_primary"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -168,7 +168,7 @@
                         android:layout_width="44dp"
                         android:layout_height="44dp"
                         android:background="@drawable/bg_button"
-                        android:contentDescription="ملء الشاشة"
+                        android:contentDescription="@string/fullscreen"
                         android:src="@drawable/ic_fullscreen" />
                 </LinearLayout>
             </LinearLayout>

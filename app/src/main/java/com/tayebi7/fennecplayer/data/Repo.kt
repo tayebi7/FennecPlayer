@@ -2,6 +2,7 @@ package com.tayebi7.fennecplayer.data
 
 import android.content.Context
 import com.google.gson.JsonElement
+import com.tayebi7.fennecplayer.R
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.tayebi7.fennecplayer.network.XtreamApiService
@@ -35,31 +36,28 @@ object Repo {
             cache[type]?.let { return@withLock it }
             when (playlist.type) {
                 PlaylistType.XTREAM -> loadXtream(playlist, type).also { cache[type] = it }
-                PlaylistType.M3U -> {
-                    storeM3u(downloadM3u(playlist.m3uUrl))
+                PlaylistType.M3U, PlaylistType.FILE -> {
+                    storeM3u(loadM3u(playlist))
                     cache[type] ?: Catalog.EMPTY
                 }
             }
         }
     }
 
-    /** يتحقق من صحة القائمة قبل حفظها. يعيد null عند النجاح أو رسالة الخطأ. */
-    suspend fun verify(playlist: Playlist): String? = withContext(Dispatchers.IO) {
+    /** يتحقق من صحة القائمة قبل حفظها. يعيد null عند النجاح أو رسالة الخطأ (بلغة التطبيق). */
+    suspend fun verify(context: Context, playlist: Playlist): String? = withContext(Dispatchers.IO) {
         try {
             when (playlist.type) {
                 PlaylistType.XTREAM -> {
                     val res = XtreamApiService.create(playlist.server).login(playlist.username, playlist.password)
-                    if (!res.isSuccessful) return@withContext "السيرفر رد بالخطأ HTTP ${res.code()}"
+                    if (!res.isSuccessful) return@withContext context.getString(R.string.err_http, res.code())
                     val info = res.body()?.userInfo
-                    when {
-                        info == null || info.auth == 0 -> "اسم المستخدم أو كلمة المرور غير صحيحة"
-                        else -> null
-                    }
+                    if (info == null || info.auth == 0) context.getString(R.string.err_auth) else null
                 }
-                PlaylistType.M3U -> {
-                    val parsed = downloadM3u(playlist.m3uUrl)
+                PlaylistType.M3U, PlaylistType.LOCAL -> {
+                    val parsed = loadM3u(playlist)
                     val total = parsed.values.sumOf { it.entries.size }
-                    if (total == 0) "الملف لا يحتوي على أي قنوات صالحة"
+                    if (total == 0) context.getString(R.string.err_empty_m3u)
                     else mutex.withLock {
                         cache.clear()
                         signature = playlist.signature
@@ -69,7 +67,7 @@ object Repo {
                 }
             }
         } catch (e: Exception) {
-            "تعذر الاتصال: ${e.message ?: e.javaClass.simpleName}"
+            context.getString(R.string.err_connect, e.message ?: e.javaClass.simpleName)
         }
     }
 
@@ -91,7 +89,7 @@ object Repo {
                 val id = o.str("id") ?: continue
                 val num = o.str("episode_num")?.toIntOrNull() ?: (out.size + 1)
                 val ext = o.str("container_extension")?.ifEmpty { null } ?: "mp4"
-                val title = o.str("title")?.ifBlank { null } ?: "الحلقة $num"
+                val title = o.str("title")?.ifBlank { null } ?: "Episode $num"
                 out.add(
                     Episode(
                         id = id, title = title, season = season, number = num,
@@ -162,14 +160,24 @@ object Repo {
     }
 
     // ───────── M3U ─────────
+    private fun loadM3u(p: Playlist): Map<ContentType, Catalog> =
+        if (p.type == PlaylistType.FILE) {
+            java.io.File(p.m3uUrl).bufferedReader().use { M3uParser.parse(it) }
+        } else downloadM3u(p.m3uUrl)
+
     private fun downloadM3u(url: String): Map<ContentType, Catalog> {
         val req = Request.Builder().url(url).build()
         XtreamApiService.httpClient.newCall(req).execute().use { res ->
             if (!res.isSuccessful) throw IOException("HTTP ${res.code}")
-            val body = res.body ?: throw IOException("ملف فارغ")
+            val body = res.body ?: throw IOException("Empty response")
             return M3uParser.parse(body.charStream().buffered())
         }
     }
+
+    private fun loadM3u(p: Playlist): Map<ContentType, Catalog> =
+        if (p.type == PlaylistType.LOCAL) {
+            java.io.File(p.m3uUrl).bufferedReader().use { M3uParser.parse(it) }
+        } else downloadM3u(p.m3uUrl)
 
     private fun storeM3u(parsed: Map<ContentType, Catalog>) {
         parsed.forEach { (t, c) -> cache[t] = c }

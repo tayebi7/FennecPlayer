@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_live">TV en direct</string>
+    <string name="home_movies">Films</string>
+    <string name="home_series">Séries</string>
+    <string name="home_favorites">Favoris</string>
+    <string name="home_playlists">Listes de lecture</string>
+    <string name="home_settings">Paramètres</string>
+    <string name="home_reload">Recharger</string>
+    <string name="home_file">Fichier local</string>
+    <string name="count_channels" formatted="true">%d chaînes</string>
+    <string name="count_movies" formatted="true">%d films</string>
+    <string name="count_series" formatted="true">%d séries</string>
+    <string name="loading">Chargement…</string>
+    <string name="status_playlist" formatted="true">Liste : %s</string>
+    <string name="status_failed">Connexion au serveur impossible</string>
+    <string name="status_m3u">Liste M3U</string>
+    <string name="status_xtream">Xtream Codes</string>
+    <string name="status_local">Fichier local</string>
+    <string name="failed_load">Échec du chargement</string>
+    <string name="playlists_title">Listes de lecture</string>
+    <string name="playlists_add">Ajouter une liste</string>
+    <string name="playlists_note">Fennec Player est uniquement un lecteur multimédia. Il ne vend ni listes ni abonnements et ne contient aucun contenu.</string>
+    <string name="playlists_hint">Appui long sur une liste pour la supprimer</string>
+    <string name="playlist_active">Active</string>
+    <string name="playlist_delete" formatted="true">Supprimer « %s » ?</string>
+    <string name="delete">Supprimer</string>
+    <string name="cancel">Annuler</string>
+    <string name="close">Fermer</string>
+    <string name="confirm">Confirmer</string>
+    <string name="add_title">Ajouter une liste de lecture</string>
+    <string name="tab_m3u">Lien M3U</string>
+    <string name="tab_xtream">Xtream Codes</string>
+    <string name="tab_file">Fichier local</string>
+    <string name="label_name">Nom de la liste</string>
+    <string name="hint_name">nom</string>
+    <string name="label_server">URL du serveur</string>
+    <string name="label_username">Nom d\'utilisateur</string>
+    <string name="label_password">Mot de passe</string>
+    <string name="label_m3u">Lien M3U</string>
+    <string name="label_file">Fichier M3U</string>
+    <string name="m3u_hint">Un lien de type get.php?username=..&amp;password=.. est converti automatiquement en Xtream pour les films et séries.</string>
+    <string name="choose_file">Choisir un fichier</string>
+    <string name="file_none">Aucun fichier choisi</string>
+    <string name="btn_add">Ajouter la liste</string>
+    <string name="btn_login">Connexion</string>
+    <string name="verifying">Vérification…</string>
+    <string name="saved">Liste enregistrée</string>
+    <string name="err_xtream_fields">Saisissez l\'URL, l\'utilisateur et le mot de passe</string>
+    <string name="err_m3u_empty">Saisissez le lien M3U</string>
+    <string name="err_file_none">Choisissez d\'abord un fichier M3U</string>
+    <string name="err_file_read">Impossible de lire le fichier</string>
+    <string name="err_http" formatted="true">Le serveur a répondu HTTP %d</string>
+    <string name="err_auth">Nom d\'utilisateur ou mot de passe incorrect</string>
+    <string name="err_empty_m3u">Le fichier ne contient aucune chaîne valide</string>
+    <string name="err_connect" formatted="true">Échec de connexion : %s</string>
+    <string name="search">Rechercher</string>
+    <string name="search_channel">Rechercher une chaîne</string>
+    <string name="all_channels">Toutes les chaînes</string>
+    <string name="all">Tout</string>
+    <string name="fav_category">★ Favoris</string>
+    <string name="no_channels">Aucune chaîne</string>
+    <string name="no_content">Aucun contenu</string>
+    <string name="no_results">Aucun résultat</string>
+    <string name="no_favorites">Pas encore de favoris. Appui long sur un élément pour l\'ajouter.</string>
+    <string name="choose_channel">Choisissez une chaîne</string>
+    <string name="fullscreen">Plein écran</string>
+    <string name="load_failed" formatted="true">Échec du chargement : %s</string>
+    <string name="play_error" formatted="true">Erreur de lecture (%s)</string>
+    <string name="channel_error" formatted="true">Impossible de lire la chaîne (%s)</string>
+    <string name="episodes_failed" formatted="true">Échec du chargement des épisodes : %s</string>
+    <string name="no_episodes">Aucun épisode disponible</string>
+    <string name="fav_added">Ajouté aux favoris</string>
+    <string name="fav_removed">Retiré des favoris</string>
+    <string name="fav_pick">Favoris</string>
+    <string name="aspect">Format d\'image</string>
+    <string name="settings_title">Paramètres</string>
+    <string name="settings_language">Langue</string>
+    <string name="lang_auto">Auto</string>
+    <string name="settings_aspect">Format d\'image par défaut</string>
+    <string name="aspect_fit">Adapter</string>
+    <string name="aspect_fill">Remplir</string>
+    <string name="aspect_zoom">Zoom</string>
+    <string name="settings_reset">Réinitialiser l\'application</string>
+    <string name="reset_confirm">Toutes les listes, favoris et paramètres seront supprimés. Continuer ?</string>
+    <string name="settings_version" formatted="true">Version %s</string>
+</resources>

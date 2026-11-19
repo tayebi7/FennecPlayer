@@ -17,18 +17,20 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tayebi7.fennecplayer.ui.applySystemBarsPadding
 import com.tayebi7.fennecplayer.data.Catalog
 import com.tayebi7.fennecplayer.data.Category
 import com.tayebi7.fennecplayer.data.ContentType
 import com.tayebi7.fennecplayer.data.Entry
 import com.tayebi7.fennecplayer.data.Episode
+import com.tayebi7.fennecplayer.data.Favorites
+import com.tayebi7.fennecplayer.data.PlaylistStore
 import com.tayebi7.fennecplayer.data.Repo
 import com.tayebi7.fennecplayer.ui.CategoryAdapter
 import com.tayebi7.fennecplayer.ui.PosterAdapter
+import com.tayebi7.fennecplayer.ui.applySystemBarsPadding
 import kotlinx.coroutines.launch
 
-/** شاشة الأفلام والمسلسلات: أقسام على اليسار وشبكة بوسترات على اليمين. */
+/** شاشة الأفلام والمسلسلات: أقسام على اليسار وشبكة بوسترات، مع المفضلة (ضغطة مطولة). */
 class BrowseActivity : AppCompatActivity() {
 
     private lateinit var type: ContentType
@@ -40,11 +42,13 @@ class BrowseActivity : AppCompatActivity() {
     private lateinit var progress: ProgressBar
 
     private val categoryAdapter = CategoryAdapter { selectCategory(it) }
-    private val posterAdapter = PosterAdapter { open(it) }
+    private val posterAdapter = PosterAdapter({ open(it) }, { toggleFavorite(it) })
 
     private var catalog: Catalog = Catalog.EMPTY
     private var currentCategory: Category? = null
     private var query = ""
+    private var playlistId = ""
+    private var favIds: Set<String> = emptySet()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +57,7 @@ class BrowseActivity : AppCompatActivity() {
 
         type = runCatching { ContentType.valueOf(intent.getStringExtra(EXTRA_TYPE) ?: "") }
             .getOrDefault(ContentType.MOVIE)
+        playlistId = PlaylistStore.load(this)?.id.orEmpty()
 
         rvCategories = findViewById(R.id.rvCategories)
         rvItems = findViewById(R.id.rvItems)
@@ -61,7 +66,9 @@ class BrowseActivity : AppCompatActivity() {
         etSearch = findViewById(R.id.etSearch)
         progress = findViewById(R.id.progress)
 
-        findViewById<TextView>(R.id.tvTitle).text = if (type == ContentType.SERIES) "المسلسلات" else "الأفلام"
+        findViewById<TextView>(R.id.tvTitle).setText(
+            if (type == ContentType.SERIES) R.string.home_series else R.string.home_movies
+        )
         findViewById<ImageView>(R.id.ivTitleIcon)
             .setImageResource(if (type == ContentType.SERIES) R.drawable.ic_series else R.drawable.ic_movie)
 
@@ -94,13 +101,19 @@ class BrowseActivity : AppCompatActivity() {
             try {
                 catalog = Repo.catalog(this@BrowseActivity, type)
             } catch (e: Exception) {
-                Toast.makeText(this@BrowseActivity, "فشل التحميل: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@BrowseActivity, getString(R.string.load_failed, e.message ?: ""), Toast.LENGTH_LONG).show()
             }
             progress.visibility = View.GONE
+            favIds = Favorites.ids(this@BrowseActivity, playlistId, type)
+            posterAdapter.favIds = favIds
 
-            val all = Category("*", "الكل", catalog.entries.size)
-            categoryAdapter.submit(listOf(all) + catalog.categories.filter { it.count > 0 })
-            selectCategory(all)
+            val all = Category("*", getString(R.string.all), catalog.entries.size)
+            val fav = Category(FAV_ID, getString(R.string.fav_category), favIds.size)
+            categoryAdapter.submit(listOf(all, fav) + catalog.categories.filter { it.count > 0 })
+            if (intent.getBooleanExtra(EXTRA_FAV, false)) {
+                categoryAdapter.select(1)
+                selectCategory(fav)
+            } else selectCategory(all)
         }
     }
 
@@ -110,16 +123,30 @@ class BrowseActivity : AppCompatActivity() {
         applyFilter()
     }
 
+    private fun toggleFavorite(entry: Entry) {
+        val now = Favorites.toggle(this, playlistId, type, entry.id)
+        favIds = Favorites.ids(this, playlistId, type)
+        posterAdapter.favIds = favIds
+        Toast.makeText(this, if (now) R.string.fav_added else R.string.fav_removed, Toast.LENGTH_SHORT).show()
+        if (currentCategory?.id == FAV_ID) applyFilter()
+    }
+
     private fun applyFilter() {
         val cat = currentCategory ?: return
         val q = query
         val list = catalog.entries.filter {
-            (cat.id == "*" || it.categoryId == cat.id) &&
+            (cat.id == "*" || (cat.id == FAV_ID && it.id in favIds) || it.categoryId == cat.id) &&
                 (q.isEmpty() || it.name.contains(q, ignoreCase = true))
         }
         posterAdapter.submit(list)
         tvEmpty.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
-        tvEmpty.text = if (catalog.entries.isEmpty()) "لا يوجد محتوى" else "لا توجد نتائج"
+        tvEmpty.text = getString(
+            when {
+                catalog.entries.isEmpty() -> R.string.no_content
+                cat.id == FAV_ID && favIds.isEmpty() -> R.string.no_favorites
+                else -> R.string.no_results
+            }
+        )
     }
 
     private fun open(entry: Entry) {
@@ -134,12 +161,12 @@ class BrowseActivity : AppCompatActivity() {
             val episodes = try {
                 Repo.episodes(this@BrowseActivity, entry.id)
             } catch (e: Exception) {
-                Toast.makeText(this@BrowseActivity, "فشل تحميل الحلقات: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@BrowseActivity, getString(R.string.episodes_failed, e.message ?: ""), Toast.LENGTH_LONG).show()
                 emptyList()
             }
             progress.visibility = View.GONE
             if (episodes.isEmpty()) {
-                Toast.makeText(this@BrowseActivity, "لا توجد حلقات متاحة", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@BrowseActivity, R.string.no_episodes, Toast.LENGTH_SHORT).show()
             } else {
                 showEpisodes(entry, episodes)
             }
@@ -159,15 +186,21 @@ class BrowseActivity : AppCompatActivity() {
                     which
                 )
             }
-            .setNegativeButton("إغلاق", null)
+            .setNegativeButton(R.string.close, null)
             .show()
     }
 
     companion object {
         private const val EXTRA_TYPE = "type"
+        const val EXTRA_FAV = "fav"
+        private const val FAV_ID = "__fav__"
 
-        fun start(context: Context, type: ContentType) {
-            context.startActivity(Intent(context, BrowseActivity::class.java).putExtra(EXTRA_TYPE, type.name))
+        fun start(context: Context, type: ContentType, fav: Boolean = false) {
+            context.startActivity(
+                Intent(context, BrowseActivity::class.java)
+                    .putExtra(EXTRA_TYPE, type.name)
+                    .putExtra(EXTRA_FAV, fav)
+            )
         }
     }
 }

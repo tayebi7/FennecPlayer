@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_live">البث المباشر</string>
+    <string name="home_movies">الأفلام</string>
+    <string name="home_series">المسلسلات</string>
+    <string name="home_favorites">المفضلة</string>
+    <string name="home_playlists">قوائم التشغيل</string>
+    <string name="home_settings">الإعدادات</string>
+    <string name="home_reload">إعادة التحميل</string>
+    <string name="home_file">ملف محلي</string>
+    <string name="count_channels" formatted="true">%d قناة</string>
+    <string name="count_movies" formatted="true">%d فيلم</string>
+    <string name="count_series" formatted="true">%d مسلسل</string>
+    <string name="loading">جاري التحميل…</string>
+    <string name="status_playlist" formatted="true">القائمة: %s</string>
+    <string name="status_failed">تعذر الاتصال بالسيرفر</string>
+    <string name="status_m3u">قائمة M3U</string>
+    <string name="status_xtream">Xtream Codes</string>
+    <string name="status_local">ملف محلي</string>
+    <string name="failed_load">تعذر التحميل</string>
+    <string name="playlists_title">قوائم التشغيل</string>
+    <string name="playlists_add">إضافة قائمة</string>
+    <string name="playlists_note">Fennec Player مشغل وسائط فقط، لا يبيع قوائم ولا اشتراكات ولا يتضمن أي محتوى.</string>
+    <string name="playlists_hint">اضغط مطولاً على القائمة لحذفها</string>
+    <string name="playlist_active">مفعّلة</string>
+    <string name="playlist_delete" formatted="true">حذف «%s»؟</string>
+    <string name="delete">حذف</string>
+    <string name="cancel">إلغاء</string>
+    <string name="close">إغلاق</string>
+    <string name="confirm">تأكيد</string>
+    <string name="add_title">إضافة قائمة تشغيل</string>
+    <string name="tab_m3u">رابط M3U</string>
+    <string name="tab_xtream">Xtream Codes</string>
+    <string name="tab_file">ملف محلي</string>
+    <string name="label_name">اسم القائمة</string>
+    <string name="hint_name">الاسم</string>
+    <string name="label_server">رابط السيرفر</string>
+    <string name="label_username">اسم المستخدم</string>
+    <string name="label_password">كلمة المرور</string>
+    <string name="label_m3u">رابط M3U</string>
+    <string name="label_file">ملف M3U</string>
+    <string name="m3u_hint">رابط من نوع get.php?username=..&amp;password=.. يُحوَّل تلقائياً إلى Xtream لدعم الأفلام والمسلسلات.</string>
+    <string name="choose_file">اختيار ملف</string>
+    <string name="file_none">لم يتم اختيار ملف</string>
+    <string name="btn_add">إضافة القائمة</string>
+    <string name="btn_login">تسجيل الدخول</string>
+    <string name="verifying">جاري التحقق...</string>
+    <string name="saved">تم حفظ القائمة بنجاح</string>
+    <string name="err_xtream_fields">يرجى إدخال رابط السيرفر واسم المستخدم وكلمة المرور</string>
+    <string name="err_m3u_empty">يرجى إدخال رابط ملف M3U</string>
+    <string name="err_file_none">اختر ملف M3U أولاً</string>
+    <string name="err_file_read">تعذر قراءة الملف</string>
+    <string name="err_http" formatted="true">السيرفر رد بالخطأ HTTP %d</string>
+    <string name="err_auth">اسم المستخدم أو كلمة المرور غير صحيحة</string>
+    <string name="err_empty_m3u">الملف لا يحتوي على أي قنوات صالحة</string>
+    <string name="err_connect" formatted="true">تعذر الاتصال: %s</string>
+    <string name="search">بحث</string>
+    <string name="search_channel">بحث عن قناة</string>
+    <string name="all_channels">كل القنوات</string>
+    <string name="all">الكل</string>
+    <string name="fav_category">★ المفضلة</string>
+    <string name="no_channels">لا توجد قنوات</string>
+    <string name="no_content">لا يوجد محتوى</string>
+    <string name="no_results">لا توجد نتائج</string>
+    <string name="no_favorites">لا توجد مفضلة بعد. اضغط مطولاً على أي عنصر لإضافته.</string>
+    <string name="choose_channel">اختر قناة للتشغيل</string>
+    <string name="fullscreen">ملء الشاشة</string>
+    <string name="load_failed" formatted="true">فشل التحميل: %s</string>
+    <string name="play_error" formatted="true">خطأ في التشغيل (%s)</string>
+    <string name="channel_error" formatted="true">تعذر تشغيل القناة (%s)</string>
+    <string name="episodes_failed" formatted="true">فشل تحميل الحلقات: %s</string>
+    <string name="no_episodes">لا توجد حلقات متاحة</string>
+    <string name="fav_added">أُضيف إلى المفضلة</string>
+    <string name="fav_removed">أُزيل من المفضلة</string>
+    <string name="fav_pick">المفضلة</string>
+    <string name="aspect">نسبة العرض</string>
+    <string name="settings_title">الإعدادات</string>
+    <string name="settings_language">اللغة</string>
+    <string name="lang_auto">تلقائي</string>
+    <string name="settings_aspect">نسبة العرض الافتراضية</string>
+    <string name="aspect_fit">ملائم</string>
+    <string name="aspect_fill">ملء</string>
+    <string name="aspect_zoom">تكبير</string>
+    <string name="settings_reset">إعادة ضبط التطبيق</string>
+    <string name="reset_confirm">سيتم حذف كل القوائم والمفضلة والإعدادات. هل تريد المتابعة؟</string>
+    <string name="settings_version" formatted="true">الإصدار %s</string>
+</resources>

@@ -29,4 +29,14 @@
         android:paddingBottom="6dp"
         android:textColor="#FFFFFF"
         android:textSize="16sp" />
+
+    <ImageButton
+        android:id="@+id/btnAspect"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="16dp"
+        android:background="@drawable/bg_button"
+        android:contentDescription="@string/aspect"
+        android:src="@drawable/ic_aspect" />
 </FrameLayout>

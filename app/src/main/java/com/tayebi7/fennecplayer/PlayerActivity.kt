@@ -3,6 +3,7 @@ package com.tayebi7.fennecplayer
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +14,10 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
+import com.tayebi7.fennecplayer.data.AppSettings
+import com.tayebi7.fennecplayer.data.Resume
 import com.tayebi7.fennecplayer.player.FennecPlayerManager
 
 /** مشغل ملء الشاشة للأفلام والحلقات، مع الانتقال التلقائي للعنصر التالي. */
@@ -27,6 +31,7 @@ class PlayerActivity : AppCompatActivity() {
     private var urls: List<String> = emptyList()
     private var index = 0
     private var position = 0L
+    private var aspect = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +49,21 @@ class PlayerActivity : AppCompatActivity() {
             return
         }
         hideSystemBars()
+
+        aspect = AppSettings.aspect(this)
+        applyAspect()
+        findViewById<View>(R.id.btnAspect).setOnClickListener {
+            aspect = (aspect + 1) % 3
+            applyAspect()
+        }
+    }
+
+    private fun applyAspect() {
+        playerView.resizeMode = when (aspect) {
+            1 -> AspectRatioFrameLayout.RESIZE_MODE_FILL
+            2 -> AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+            else -> AspectRatioFrameLayout.RESIZE_MODE_FIT
+        }
     }
 
     private fun hideSystemBars() {
@@ -60,14 +80,17 @@ class PlayerActivity : AppCompatActivity() {
         val p = FennecPlayerManager.createPlayer(this)
         player = p
         playerView.player = p
-        p.setMediaItems(urls.map { MediaItem.fromUri(it) }, index.coerceIn(0, urls.size - 1), position)
+        val start = index.coerceIn(0, urls.size - 1)
+        // متابعة المشاهدة من آخر نقطة محفوظة
+        val startPos = if (position > 0) position else Resume.position(this, urls[start])
+        p.setMediaItems(urls.map { MediaItem.fromUri(it) }, start, startPos)
         p.addListener(object : Player.Listener {
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 updateTitle(p.currentMediaItemIndex)
             }
 
             override fun onPlayerError(error: PlaybackException) {
-                Toast.makeText(this@PlayerActivity, "خطأ في التشغيل (${error.errorCodeName})", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@PlayerActivity, getString(R.string.play_error, error.errorCodeName), Toast.LENGTH_LONG).show()
             }
         })
         updateTitle(p.currentMediaItemIndex)
@@ -80,6 +103,7 @@ class PlayerActivity : AppCompatActivity() {
         player?.let {
             index = it.currentMediaItemIndex
             position = it.currentPosition
+            urls.getOrNull(index)?.let { u -> Resume.savePosition(this, u, position, it.duration.coerceAtLeast(0)) }
             it.release()
         }
         player = null

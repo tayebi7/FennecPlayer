@@ -174,11 +174,6 @@ object Repo {
         }
     }
 
-    private fun loadM3u(p: Playlist): Map<ContentType, Catalog> =
-        if (p.type == PlaylistType.LOCAL) {
-            java.io.File(p.m3uUrl).bufferedReader().use { M3uParser.parse(it) }
-        } else downloadM3u(p.m3uUrl)
-
     private fun storeM3u(parsed: Map<ContentType, Catalog>) {
         parsed.forEach { (t, c) -> cache[t] = c }
     }

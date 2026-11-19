@@ -59,16 +59,16 @@ class MainActivity : AppCompatActivity() {
         val fav = findViewById<View>(R.id.cardFavorites)
         val playlists = findViewById<View>(R.id.cardPlaylists)
 
-        live.setOnClickListener { startActivity(Intent(this, LiveTvActivity::class.java)) }
-        movies.setOnClickListener { BrowseActivity.start(this, ContentType.MOVIE) }
-        series.setOnClickListener { BrowseActivity.start(this, ContentType.SERIES) }
-        fav.setOnClickListener { showFavoritesPicker() }
+        live.setOnClickListener { requirePlaylist { startActivity(Intent(this, LiveTvActivity::class.java)) } }
+        movies.setOnClickListener { requirePlaylist { BrowseActivity.start(this, ContentType.MOVIE) } }
+        series.setOnClickListener { requirePlaylist { BrowseActivity.start(this, ContentType.SERIES) } }
+        fav.setOnClickListener { requirePlaylist { showFavoritesPicker() } }
         playlists.setOnClickListener { startActivity(Intent(this, PlaylistsActivity::class.java)) }
 
         findViewById<View>(R.id.btnSettings).setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
-        findViewById<View>(R.id.btnReloadData).setOnClickListener { loadPlaylist(force = true) }
+        findViewById<View>(R.id.btnReloadData).setOnClickListener { requirePlaylist { loadPlaylist(force = true) } }
         findViewById<View>(R.id.btnFile).setOnClickListener {
             startActivity(
                 Intent(this, ActivationActivity::class.java)
@@ -83,6 +83,12 @@ class MainActivity : AppCompatActivity() {
                 v.animate().scaleX(s).scaleY(s).setDuration(120).start()
             }
         }
+    }
+
+    /** بدون قائمة تشغيل: تُفتح شاشة «إضافة قائمة» بدل صفحة فارغة. */
+    private fun requirePlaylist(action: () -> Unit) {
+        if (PlaylistStore.load(this) == null) startActivity(Intent(this, ActivationActivity::class.java))
+        else action()
     }
 
     private fun showFavoritesPicker() {

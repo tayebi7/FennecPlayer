@@ -36,7 +36,7 @@ object Repo {
             cache[type]?.let { return@withLock it }
             when (playlist.type) {
                 PlaylistType.XTREAM -> loadXtream(playlist, type).also { cache[type] = it }
-                PlaylistType.M3U, PlaylistType.FILE -> {
+                PlaylistType.M3U, PlaylistType.LOCAL -> {
                     storeM3u(loadM3u(playlist))
                     cache[type] ?: Catalog.EMPTY
                 }
@@ -161,7 +161,7 @@ object Repo {
 
     // ───────── M3U ─────────
     private fun loadM3u(p: Playlist): Map<ContentType, Catalog> =
-        if (p.type == PlaylistType.FILE) {
+        if (p.type == PlaylistType.LOCAL) {
             java.io.File(p.m3uUrl).bufferedReader().use { M3uParser.parse(it) }
         } else downloadM3u(p.m3uUrl)
 
